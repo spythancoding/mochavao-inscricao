@@ -290,85 +290,42 @@ function limparErros() {
   });
 }
 
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1453035061866790944/DFaZEmVrZT5S_2dU64xkPu8Fa9r90ybSQYo2HVWbF77shRc1RDbUA4mH1PfT1wBYqepJ";
-
-async function enviarParaDiscord(dados) {
-  const payload = {
-  username: "Inscrições • MoChavãO",
-  avatar_url: "https://i.imgur.com/placeholder.png",
-  embeds: [
+  async function enviarParaAPI(dados) {
+  const response = await fetch(
+    "http://18.224.37.130:3333/api/inscricao",
     {
-      color: 0xc0392b,
-      title: "📥 Nova Inscrição Recebida",
-      description:
-        "**Uma nova candidatura foi enviada para a Família MoChavãO.**\n" +
-        "Analise os dados abaixo com atenção.",
-
-      fields: [
-
-        {
-          name: "🆔 Discord ID",
-          value: dados.userId,
-          inline: false
-        },
-
-        {
-          name: "👤 Identificação",
-          value:
-            `**Nick:** ${dados.nick || "—"}\n` +
-            `**Nome:** ${dados.nome || "—"}\n` +
-            `**Idade:** ${dados.idade || "—"}`,
-          inline: false
-        },
-
-        {
-          name: "🎮 Conta no Servidor",
-          value:
-            `**Nível:** ${dados.nivelConta || "—"}\n` +
-            `**Horas no /RG:** ${dados.horasRG || "—"}\n` +
-            `**Liderança:** ${dados.liderOrg || "—"}`,
-          inline: false
-        },
-
-        {
-          name: "🎧 Comunicação",
-          value:
-            `**Microfone:** ${dados.microfone || "—"}\n` +
-            `**Call:** ${dados.call || "—"}`,
-          inline: true
-        },
-
-        {
-          name: "⏰ Disponibilidade",
-          value: dados.horario || "—",
-          inline: true
-        },
-
-        {
-          name: "📝 Observações",
-          value: dados.observacoes?.trim() || "_Nenhuma observação informada._",
-          inline: false
-        }
-      ],
-
-      footer: {
-        text: "Sistema de Inscrição • Família MoChavãO"
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
       },
-
-      timestamp: new Date()
+      body: JSON.stringify({
+        userId: dados.userId,
+        dados: {
+          nick: dados.nick,
+          nome: dados.nome,
+          idade: dados.idade,
+          whatsapp: dados.whatsapp,
+          horasRG: dados.horasRG,
+          nivelConta: dados.nivelConta,
+          liderOrg: dados.liderOrg,
+          microfone: dados.microfone,
+          call: dados.call,
+          horario: dados.horario,
+          observacoes: dados.observacoes
+        }
+      })
     }
-  ]
-};
+  );
 
+  const result = await response.json();
 
-  await fetch(WEBHOOK_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
+  if (!response.ok) {
+    throw new Error(result.error || "Erro ao enviar inscrição.");
+  }
+
+  return result;
 }
+
 
 /* ================= ENVIO ================= */
 
@@ -396,10 +353,14 @@ async function submitForm() {
   stepLoading();
 
   try {
-    await enviarParaDiscord(dados);
-  } catch (err) {
-    console.error("Erro ao enviar para o Discord:", err);
-  }
+  await enviarParaAPI(dados);
+} catch (err) {
+  console.error("Erro ao enviar inscrição:", err);
+  alert(err.message);
+  stepForm();
+  return;
+}
+
 }
 
 
