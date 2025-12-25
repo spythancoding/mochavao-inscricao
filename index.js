@@ -1,30 +1,12 @@
 const app = document.getElementById("app");
 const params = new URLSearchParams(window.location.search);
-const userId = params.get("uid");
+
+// uid agora é OPCIONAL
+const userId = params.get("uid") || "TESTE_SEM_UID";
+
 console.log("🚨 SITE ATUALIZADO SEM WEBHOOK");
+console.log("UID ATUAL:", userId);
 
-
-if (!userId) {
-  document.body.innerHTML = `
-    <div style="
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#0f0f0f;
-      color:#fff;
-      font-family:Arial;
-      text-align:center;
-      padding:20px;
-    ">
-      <div>
-        <h1>❌ Link inválido</h1>
-        <p>Para realizar a inscrição, utilize o comando <b>/inscrever</b> no Discord.</p>
-      </div>
-    </div>
-  `;
-  throw new Error("Acesso inválido: uid ausente");
-}
 
 
 /* ================= COMPONENTES ================= */
