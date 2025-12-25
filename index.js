@@ -1,6 +1,8 @@
 const app = document.getElementById("app");
 const params = new URLSearchParams(window.location.search);
 const userId = params.get("uid");
+console.log("🚨 SITE ATUALIZADO SEM WEBHOOK");
+
 
 if (!userId) {
   document.body.innerHTML = `
