@@ -276,7 +276,7 @@ function limparErros() {
 
   async function enviarParaAPI(dados) {
   const response = await fetch(
-    "http://18.224.37.130:3333/api/inscricao",
+    "/api/inscricao",
     {
       method: "POST",
       headers: {
