@@ -1,8 +1,16 @@
 const app = document.getElementById("app");
 const params = new URLSearchParams(window.location.search);
+const userId = params.get("uid");
 
-// uid agora é OPCIONAL
-const userId = params.get("uid") || "TESTE_SEM_UID";
+if (!userId) {
+  document.body.innerHTML = `
+    <div style="padding:20px;font-family:sans-serif">
+      <h1>Link inválido</h1>
+      <p>Este link de inscrição deve ser acessado pelo Discord.</p>
+    </div>
+  `;
+  throw new Error("UID ausente");
+}
 
 console.log("🚨 SITE ATUALIZADO SEM WEBHOOK");
 console.log("UID ATUAL:", userId);
